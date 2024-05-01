@@ -33,6 +33,8 @@ veja que não tivemos erros, mas o tempo de resposta foi muito alto.
 
 ## A solução
 
+![img_8.png](img_8.png)
+
 Habilitando o job nas envs e rodando o projeto novamente, veremos o seguinte log ao iniciar a aplicação:
 ![img_5.png](img_5.png)
 veja que a cada x segundos (definido no application.properties) o job é executado e as mensagens são processadas.
