@@ -1,5 +1,6 @@
 package com.mateusjose98.queuewithdatabase.external;
 
+import com.mateusjose98.queuewithdatabase.util.Sleeper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +12,7 @@ public class PaymentGateway {
 
     public String processPayment(String creditCardInfo) {
         log.info("Processing payment ...");
-        try {
-            Thread.sleep(800);
-            return "transactionId_"+ UUID.randomUUID();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        Sleeper.sleep(1);
+        return UUID.randomUUID().toString();
     }
 }
