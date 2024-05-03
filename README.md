@@ -57,6 +57,8 @@ e processar em um momento futuro.
 Agora as mensagens estão sendo processadas em blocos e os pedidos estão sendo devidamente finalizados. Caso a velocidade de finalização não esteja tão rápida quanto o esperado, podemos aumentar o número de threads que processam as mensagens, ou até mesmo o número de mensagens processadas por bloco. No exemplo abaixo, aumentei o número de consumidores para 5, esse número é determinado pelo seu contexto.
 ![img_7.png](img_7.png)
 
+Sobre o consumo, utilizando 5 consumidores, consegui um throughput de 460 pedidos/min, lembrando que para cada pedido tem 700 de latência fake externa + o tempo update de status.
+
 Dicas e insigths que vi ao longo do desenvolvimento: 
 - logar o tempo de processamento de cada bloco, para que você possa ter uma ideia de quanto tempo está demorando para processar as mensagens e assim ajustar o número de consumidores.
 - organizar o consumidor de forma que ele seja capaz de processar as mensagens em paralelo, para que você possa ter um ganho de performance.
