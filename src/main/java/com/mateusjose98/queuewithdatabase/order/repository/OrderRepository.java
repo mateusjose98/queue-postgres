@@ -14,7 +14,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints(@QueryHint(name = AvailableSettings.JAKARTA_LOCK_TIMEOUT, value = "-2"))
-    List<Order> findByStatus(String pending, Limit limit);
+    List<Order> findByStatusOrderByIdAsc(String pending, Limit limit);
 
     @Modifying
     @Query("update Order o set o.status = ?1 where o.id = ?2")

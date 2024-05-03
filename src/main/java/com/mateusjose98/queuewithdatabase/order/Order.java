@@ -24,7 +24,8 @@ import java.io.Serializable;
 public class Order implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_generator")
+    @SequenceGenerator(name = "seq_generator", sequenceName = "seq_order", allocationSize = 20)
     private Long id;
     private String customerDocument;
     private String email;

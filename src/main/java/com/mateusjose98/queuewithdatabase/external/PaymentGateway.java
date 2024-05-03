@@ -12,7 +12,7 @@ public class PaymentGateway {
 
     public String processPayment(String creditCardInfo) {
         log.info("Processing payment ...");
-        Sleeper.sleep(1);
+        Sleeper.sleep(3);
         return UUID.randomUUID().toString();
     }
 }

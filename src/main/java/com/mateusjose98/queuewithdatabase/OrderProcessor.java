@@ -11,12 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Limit;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
@@ -35,35 +32,43 @@ public class OrderProcessor {
     final TransactionTemplate transactionTemplate;
     @Value("${batch.size}")
     private int batchSize;
-    @Scheduled(fixedDelayString = "${period.job}", timeUnit = TimeUnit.SECONDS, initialDelay = 2)
+    @Scheduled(fixedDelayString = "${period.job}", timeUnit = TimeUnit.SECONDS, initialDelay = 10)
     public void process() {
 
         boolean pending = true;
 
         while(pending) {
             pending = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
-                List<Order> pendingOrders = orderRepository.findByStatus("Pending", Limit.of(batchSize));
+                List<Order> pendingOrders = orderRepository.findByStatusOrderByIdAsc("Pending", Limit.of(batchSize));
                 if (pendingOrders.isEmpty()) {
                     return false;
                 }
-                pendingOrders.forEach(order -> {
-
-                    OrderRequest orderRequest = JsonUtils.fromJson(order.getJsonValue(), OrderRequest.class);
-                    String transactionId = paymentGateway.processPayment(orderRequest.creditCardInfo());
-                    if (transactionId == null) {
-                        emailService.notifyError(orderRequest);
-                        log.error("Error processing payment for order {}", order.getId());
-                        return;
-                    } else {
-                        orderRepository.updateStatus("Paid", order.getId());
-                        emailService.notify(orderRequest, transactionId);
-                    }
-                    stockService.updateStock(10, orderRequest.items().size());
-                });
+                processList(pendingOrders);
                 return true;
             }));
         }
 
 
     }
+
+    private void processList(List<Order> pendingOrders) {
+        pendingOrders.forEach(order -> {
+
+            OrderRequest orderRequest = JsonUtils.fromJson(order.getJsonValue(), OrderRequest.class);
+            String transactionId = paymentGateway.processPayment(orderRequest.creditCardInfo());
+            if (transactionId == null) {
+                emailService.notifyError(orderRequest);
+                log.error("Error processing payment for order {}", order.getId());
+                return;
+            } else {
+                order.setStatus("Paid");
+                emailService.notify(orderRequest, transactionId);
+            }
+            stockService.updateStock(10, orderRequest.items().size());
+        });
+
+        orderRepository.saveAll(pendingOrders);
+    }
+
+
 }

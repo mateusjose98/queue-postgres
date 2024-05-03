@@ -13,6 +13,6 @@ public class StockService {
 
     public void updateStock(Integer product, Integer quantity) {
         log.info("Updating stock ...");
-        Sleeper.sleep(1);
+        Sleeper.sleep(3);
     }
 }
