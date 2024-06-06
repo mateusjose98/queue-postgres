@@ -1,7 +1,7 @@
 # Implementando um sistema de filas com o banco de dados postgres
 
 ## Introdução
-Após ver algumas palestras do @Rafael Ponte, resolvi implementar um sistema de filas com o banco de dados postgres. A ideia é criar um sistema de filas que possa ser utilizado em um cenário com o banco de dados postgres, sem a necessidade de instalar um software de mensageria mais robusto como o RabbitMQ.
+Após ver algumas palestras do Rafael Ponte(@rponte), resolvi implementar um sistema de filas com o banco de dados postgres. A ideia é criar um sistema de filas que possa ser utilizado em um cenário com o banco de dados postgres, sem a necessidade de instalar um software de mensageria mais robusto como o RabbitMQ.
 A ideia proposta é utilizar uma tabela alvo para armazenar as mensagens que serão processadas no futuro. No ato de processar as mensagens, o sistema utilizará locks para garantir que a mensagem seja processada apenas uma vez.
 
 ## O cenário de uso
